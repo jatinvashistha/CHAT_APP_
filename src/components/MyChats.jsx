@@ -1,14 +1,13 @@
- 
- import axios from "axios";
-import { useEffect, useState } from "react";
-import { getSender } from "../config/ChatLogics";
-import ChatLoading from "./ChatLoading";
-import GroupChatModal from "./miscellaneous/GroupChatModal";
-import { ChatState } from "../Context/ChatProvider";
-import { Box, Button, Stack, Text, useToast } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { getSender } from '../config/ChatLogics';
+import ChatLoading from './ChatLoading';
+import GroupChatModal from './miscellaneous/GroupChatModal';
+import { ChatState } from '../Context/ChatProvider';
+import { Box, Button, Stack, Text, useToast } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 
-const MyChats = ({fetchAgain} ) => {
+const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
 
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
@@ -16,7 +15,6 @@ const MyChats = ({fetchAgain} ) => {
   const toast = useToast();
 
   const fetchChats = async () => {
-    // console.log(user._id);
     try {
       const config = {
         headers: {
@@ -24,43 +22,44 @@ const MyChats = ({fetchAgain} ) => {
         },
       };
 
-      const { data } = await axios.get("https://smn8mm-5000.csb.app/api/chat", config);
+      const { data } = await axios.get(
+        'https://smn8mm-5000.csb.app/api/chat',
+        config
+      );
       setChats(data);
     } catch (error) {
       toast({
-        title: "Error Occured!",
-        description: "Failed to Load the chats",
-        status: "error",
+        title: 'Error Occurred!',
+        description: 'Failed to load the chats',
+        status: 'error',
         duration: 5000,
         isClosable: true,
-        position: "bottom-left",
+        position: 'bottom-left',
       });
     }
   };
 
   useEffect(() => {
-    setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
+    setLoggedUser(JSON.parse(localStorage.getItem('userInfo')));
     fetchChats();
-   }, [
-    fetchAgain
-  ]);
+  }, [fetchAgain]);
 
   return (
     <Box
-      display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      display={{ base: selectedChat ? 'none' : 'flex', md: 'flex' }}
       flexDirection="column"
       alignItems="center"
       p={3}
-      height={"85vh"}
+      height={'85vh'}
       bg="white"
-      width={{ base: "100%", md: "31%" }}
+      width={{ base: '100%', md: '31%' }}
       borderRadius="lg"
       borderWidth="1px"
     >
       <Box
         pb={3}
         px={3}
-        fontSize={{ base: "28px", md: "30px" }}
+        fontSize={{ base: '28px', md: '30px' }}
         fontFamily="Work sans"
         display="flex"
         width="100%"
@@ -71,7 +70,7 @@ const MyChats = ({fetchAgain} ) => {
         <GroupChatModal>
           <Button
             display="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+            fontSize={{ base: '17px', md: '10px', lg: '17px' }}
             rightIcon={<AddIcon />}
           >
             New Group Chat
@@ -90,12 +89,12 @@ const MyChats = ({fetchAgain} ) => {
       >
         {chats ? (
           <Stack overflowY="scroll">
-            {chats.map((chat) => (
+            {chats.map(chat => (
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
-                bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-                color={selectedChat === chat ? "white" : "black"}
+                bg={selectedChat === chat ? '#38B2AC' : '#E8E8E8'}
+                color={selectedChat === chat ? 'white' : 'black'}
                 px={3}
                 py={2}
                 borderRadius="lg"
@@ -104,18 +103,14 @@ const MyChats = ({fetchAgain} ) => {
                 <Text>
                   {!chat.isGroupChat
                     ? getSender(loggedUser, chat.users)
-                    : chat.chatName
-                  
-                  
-                  
-                  }
+                    : chat.chatName}
                 </Text>
-                {/* {console.log(chat.chatName)} */}
-                {chat.latestMessage && (
+                {/* Ensure null checks before accessing nested properties */}
+                {chat.latestMessage && chat.latestMessage.sender && (
                   <Text fontSize="xs">
                     <b>{chat.latestMessage.sender.name} : </b>
                     {chat.latestMessage.content.length > 50
-                      ? chat.latestMessage.content.substring(0, 51) + "..."
+                      ? chat.latestMessage.content.substring(0, 51) + '...'
                       : chat.latestMessage.content}
                   </Text>
                 )}
